@@ -3,6 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>ارزیابی شایستگی‌های شغلی</title>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVVoGXMNl0nNi197lFC-lSAK1lvKMdhZo",
+            authDomain: "competencysurvey-77f4f.firebaseapp.com",
+            projectId: "competencysurvey-77f4f",
+            storageBucket: "competencysurvey-77f4f.firebasestorage.app",
+            messagingSenderId: "607572891153",
+            appId: "1:607572891153:web:f471ac1c4c8c31b12243b0",
+            measurementId: "G-B0L1S9VV96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+    </script>
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; }
         table { border-collapse: collapse; width: 100%; }
@@ -122,7 +142,7 @@
             }
         });
 
-        document.getElementById("competencyForm").addEventListener("submit", (e) => {
+        document.getElementById("competencyForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
             const data = {};
@@ -130,20 +150,14 @@
                 data[key] = value;
             });
 
-            fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: { "Content-Type": "application/json" }
-            })
-            .then(response => response.json())
-            .then(result => {
+            try {
+                await addDoc(collection(db, "responses"), data);
                 alert("پاسخ‌ها با موفقیت ارسال شد!");
                 e.target.reset();
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error:", error);
                 alert("خطایی در ارسال رخ داد. لطفاً دوباره امتحان کنید.");
-            });
+            }
         });
     </script>
 </body>
