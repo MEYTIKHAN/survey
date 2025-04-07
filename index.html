@@ -3,26 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>ارزیابی شایستگی‌های شغلی</title>
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVVoGXMNl0nNi197lFC-lSAK1lvKMdhZo",
-            authDomain: "competencysurvey-77f4f.firebaseapp.com",
-            projectId: "competencysurvey-77f4f",
-            storageBucket: "competencysurvey-77f4f.firebasestorage.app",
-            messagingSenderId: "607572891153",
-            appId: "1:607572891153:web:f471ac1c4c8c31b12243b0",
-            measurementId: "G-B0L1S9VV96"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
-    </script>
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; }
         table { border-collapse: collapse; width: 100%; }
@@ -60,105 +40,131 @@
         <button type="submit">ارسال</button>
     </form>
 
-    <script>
-        const competencies = [
-            "قدرت تحلیل و درک محیط", "گوش دادن فعال", "مهارت نوشتاری و مکاتبه", "هوش کلامی",
-            "هوش تحلیلی و محاسباتی", "دانش حرفه‌ای و شغلی", "تفکر انتقادی", "یادگیری فعال",
-            "راهبردهای یادگیری", "قدرت نظارت و کنترل", "آگاهی اجتماعی", "هماهنگی بین بخشی",
-            "رهبری تحول‌گرا", "مهارت مذاکره و فن بیان", "مهارت حل مسائل پیچیده", "تحلیل عملیات",
-            "مهارت‌های رایانه‌ای و برنامه‌نویسی", "پایش فرایندهای اجرایی", "مهارت مسأله‌یابی",
-            "مهارت تصمیم‌گیری و قضاوت", "تفکر و تحلیل سیستمی و ارزیابی سیستم‌ها", "مدیریت زمان",
-            "مدیریت منابع مالی", "مدیریت تجهیزات و منابع مادی", "مدیریت منابع انسانی"
-        ];
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        const effectOptions = ["خیلی کم", "کم", "متوسط", "زیاد", "خیلی زیاد"];
-        const importanceOptions = [0, 0.25, 0.5, 0.75, 1];
+        // Firebase configuration (بدون Analytics)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVVoGXMNl0nNi197lFC-lSAK1lvKMdhZo",
+            authDomain: "competencysurvey-77f4f.firebaseapp.com",
+            projectId: "competencysurvey-77f4f",
+            storageBucket: "competencysurvey-77f4f.firebasestorage.app",
+            messagingSenderId: "607572891153",
+            appId: "1:607572891153:web:f471ac1c4c8c31b12243b0"
+        };
 
-        const tableBody = document.getElementById("tableBody");
-        competencies.forEach((competency, index) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${competency}</td>
-                <td><select name="effect_edu_${index}" class="effect" required></select></td>
-                <td><select name="importance_edu_${index}" class="importance" required></select></td>
-                <td><select name="effect_admin_${index}" class="effect" required></select></td>
-                <td><select name="importance_admin_${index}" class="importance" required></select></td>
-                <td><select name="effect_command_${index}" class="effect" required></select></td>
-                <td><select name="importance_command_${index}" class="importance" required></select></td>
-            `;
-            tableBody.appendChild(row);
-        });
+        // Initialize Firebase
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            console.log("Firebase initialized successfully:", app);
 
-        document.querySelectorAll(".effect").forEach(select => {
-            effectOptions.forEach(option => {
-                const opt = document.createElement("option");
-                opt.value = option;
-                opt.text = option;
-                select.appendChild(opt);
+            // Competencies and options
+            const competencies = [
+                "قدرت تحلیل و درک محیط", "گوش دادن فعال", "مهارت نوشتاری و مکاتبه", "هوش کلامی",
+                "هوش تحلیلی و محاسباتی", "دانش حرفه‌ای و شغلی", "تفکر انتقادی", "یادگیری فعال",
+                "راهبردهای یادگیری", "قدرت نظارت و کنترل", "آگاهی اجتماعی", "هماهنگی بین بخشی",
+                "رهبری تحول‌گرا", "مهارت مذاکره و فن بیان", "مهارت حل مسائل پیچیده", "تحلیل عملیات",
+                "مهارت‌های رایانه‌ای و برنامه‌نویسی", "پایش فرایندهای اجرایی", "مهارت مسأله‌یابی",
+                "مهارت تصمیم‌گیری و قضاوت", "تفکر و تحلیل سیستمی و ارزیابی سیستم‌ها", "مدیریت زمان",
+                "مدیریت منابع مالی", "مدیریت تجهیزات و منابع مادی", "مدیریت منابع انسانی"
+            ];
+
+            const effectOptions = ["خیلی کم", "کم", "متوسط", "زیاد", "خیلی زیاد"];
+            const importanceOptions = [0, 0.25, 0.5, 0.75, 1];
+
+            const tableBody = document.getElementById("tableBody");
+            competencies.forEach((competency, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${competency}</td>
+                    <td><select name="effect_edu_${index}" class="effect" required></select></td>
+                    <td><select name="importance_edu_${index}" class="importance" required></select></td>
+                    <td><select name="effect_admin_${index}" class="effect" required></select></td>
+                    <td><select name="importance_admin_${index}" class="importance" required></select></td>
+                    <td><select name="effect_command_${index}" class="effect" required></select></td>
+                    <td><select name="importance_command_${index}" class="importance" required></select></td>
+                `;
+                tableBody.appendChild(row);
             });
-        });
 
-        document.querySelectorAll(".importance").forEach(select => {
-            importanceOptions.forEach(option => {
-                const opt = document.createElement("option");
-                opt.value = option;
-                opt.text = option;
-                select.appendChild(opt);
+            document.querySelectorAll(".effect").forEach(select => {
+                effectOptions.forEach(option => {
+                    const opt = document.createElement("option");
+                    opt.value = option;
+                    opt.text = option;
+                    select.appendChild(opt);
+                });
             });
-        });
 
-        document.addEventListener("keydown", (e) => {
-            const activeElement = document.activeElement;
-            if (activeElement.tagName === "SELECT") {
-                const row = activeElement.parentElement.parentElement.rowIndex - 2;
-                const col = activeElement.parentElement.cellIndex;
-                const allSelects = document.querySelectorAll("select");
+            document.querySelectorAll(".importance").forEach(select => {
+                importanceOptions.forEach(option => {
+                    const opt = document.createElement("option");
+                    opt.value = option;
+                    opt.text = option;
+                    select.appendChild(opt);
+                });
+            });
 
-                if (e.key >= "1" && e.key <= "5") {
-                    e.preventDefault();
-                    const index = parseInt(e.key) - 1;
-                    if (activeElement.classList.contains("effect")) {
-                        activeElement.value = effectOptions[index];
-                    } else if (activeElement.classList.contains("importance")) {
-                        activeElement.value = importanceOptions[index];
+            document.addEventListener("keydown", (e) => {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === "SELECT") {
+                    const row = activeElement.parentElement.parentElement.rowIndex - 2;
+                    const col = activeElement.parentElement.cellIndex;
+                    const allSelects = document.querySelectorAll("select");
+
+                    if (e.key >= "1" && e.key <= "5") {
+                        e.preventDefault();
+                        const index = parseInt(e.key) - 1;
+                        if (activeElement.classList.contains("effect")) {
+                            activeElement.value = effectOptions[index];
+                        } else if (activeElement.classList.contains("importance")) {
+                            activeElement.value = importanceOptions[index];
+                        }
+                    }
+
+                    if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+                        e.preventDefault();
+                        let newRow = row;
+                        let newCol = col;
+
+                        if (e.key === "ArrowRight") newCol = Math.min(col + 1, 6);
+                        if (e.key === "ArrowLeft") newCol = Math.max(col - 1, 1);
+                        if (e.key === "ArrowDown") newRow = Math.min(row + 1, 24);
+                        if (e.key === "ArrowUp") newRow = Math.max(row - 1, 0);
+
+                        const newIndex = newRow * 6 + (newCol - 1);
+                        if (newIndex >= 0 && newIndex < allSelects.length) {
+                            allSelects[newIndex].focus();
+                        }
                     }
                 }
-
-                if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                    let newRow = row;
-                    let newCol = col;
-
-                    if (e.key === "ArrowRight") newCol = Math.min(col + 1, 6);
-                    if (e.key === "ArrowLeft") newCol = Math.max(col - 1, 1);
-                    if (e.key === "ArrowDown") newRow = Math.min(row + 1, 24);
-                    if (e.key === "ArrowUp") newRow = Math.max(row - 1, 0);
-
-                    const newIndex = newRow * 6 + (newCol - 1);
-                    if (newIndex >= 0 && newIndex < allSelects.length) {
-                        allSelects[newIndex].focus();
-                    }
-                }
-            }
-        });
-
-        document.getElementById("competencyForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
             });
 
-            try {
-                await addDoc(collection(db, "responses"), data);
-                alert("پاسخ‌ها با موفقیت ارسال شد!");
-                e.target.reset();
-            } catch (error) {
-                console.error("Error:", error);
-                alert("خطایی در ارسال رخ داد. لطفاً دوباره امتحان کنید.");
-            }
-        });
+            document.getElementById("competencyForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                try {
+                    console.log("Attempting to save data to Firestore:", data);
+                    const docRef = await addDoc(collection(db, "responses"), data);
+                    console.log("Document written with ID:", docRef.id);
+                    alert("پاسخ‌ها با موفقیت ارسال شد!");
+                    e.target.reset();
+                } catch (error) {
+                    console.error("Error adding document to Firestore:", error);
+                    alert("خطایی در ارسال رخ داد: " + error.message);
+                }
+            });
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+        }
     </script>
 </body>
 </html>
