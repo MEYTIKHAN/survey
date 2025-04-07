@@ -41,11 +41,11 @@
     </form>
 
     <script type="module">
-        // Import Firebase SDKs
+        // وارد کردن ماژول‌های Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-        // Firebase configuration (بدون Analytics)
+        // تنظیمات Firebase (بدون Analytics)
         const firebaseConfig = {
             apiKey: "AIzaSyAVVoGXMNl0nNi197lFC-lSAK1lvKMdhZo",
             authDomain: "competencysurvey-77f4f.firebaseapp.com",
@@ -55,13 +55,13 @@
             appId: "1:607572891153:web:f471ac1c4c8c31b12243b0"
         };
 
-        // Initialize Firebase
+        // مقداردهی اولیه Firebase
         try {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             console.log("Firebase initialized successfully:", app);
 
-            // Competencies and options
+            // لیست شایستگی‌ها و گزینه‌ها
             const competencies = [
                 "قدرت تحلیل و درک محیط", "گوش دادن فعال", "مهارت نوشتاری و مکاتبه", "هوش کلامی",
                 "هوش تحلیلی و محاسباتی", "دانش حرفه‌ای و شغلی", "تفکر انتقادی", "یادگیری فعال",
