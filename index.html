@@ -12,7 +12,7 @@
         select:focus { background-color: #e0f7fa; }
         /* رنگ برای ستون شایستگی‌ها (اولین ستون) */
         th:nth-child(1), td:nth-child(1) {
-            background-color: #f5f5f5; /* خاکستری خیلی روشن */
+            background-color: #ffffff !important; /* سفید با اولویت بالا */
         }
         /* مشاغل آموزشی-پژوهشی: سبز پررنگ‌تر */
         th:nth-child(2), th:nth-child(3), td:nth-child(2), td:nth-child(3) {
@@ -211,6 +211,8 @@
                 try {
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("Document written with ID:", docRef.id);
+                    // برای دیباگ: بعد از ارسال، ID سند رو نمایش بده
+                    console.log("Successfully saved document with ID:", docRef.id);
                     alert("پاسخ‌ها با موفقیت ارسال شد!");
                     e.target.reset();
                 } catch (error) {
