@@ -10,21 +10,18 @@
         th { background-color: #f2f2f2; }
         select { width: 100%; padding: 5px; }
         select:focus { background-color: #e0f7fa; }
-        /* رنگ برای ستون شایستگی‌ها (اولین ستون) */
-        th:nth-child(1), td:nth-child(1) {
-            background-color: #ffffff !important; /* سفید با اولویت بالا */
+        /* رنگ برای ستون‌ها با استفاده از کلاس */
+        .competency-column {
+            background-color: #ffffff; /* سفید برای ستون شایستگی‌ها */
         }
-        /* مشاغل آموزشی-پژوهشی: سبز پررنگ‌تر */
-        th:nth-child(2), th:nth-child(3), td:nth-child(2), td:nth-child(3) {
-            background-color: #c8e6c9;
+        .edu-column {
+            background-color: #e6f4ea; /* سبز ملایم برای مشاغل آموزشی-پژوهشی */
         }
-        /* مشاغل ستادی: آبی پررنگ‌تر */
-        th:nth-child(4), th:nth-child(5), td:nth-child(4), td:nth-child(5) {
-            background-color: #bbdefb;
+        .admin-column {
+            background-color: #e6f0fa; /* آبی ملایم برای مشاغل ستادی */
         }
-        /* مشاغل فرماندهی: زرد پررنگ‌تر */
-        th:nth-child(6), th:nth-child(7), td:nth-child(6), td:nth-child(7) {
-            background-color: #ffecb3;
+        .command-column {
+            background-color: #fff7e6; /* زرد ملایم برای مشاغل فرماندهی */
         }
         /* استایل برای فیلد نام */
         .name-field {
@@ -52,18 +49,18 @@
         <table id="competencyTable">
             <thead>
                 <tr>
-                    <th rowspan="2">شایستگی‌ها</th>
-                    <th colspan="2">مشاغل آموزشی-پژوهشی</th>
-                    <th colspan="2">مشاغل ستادی</th>
-                    <th colspan="2">مشاغل فرماندهی</th>
+                    <th rowspan="2" class="competency-column">شایستگی‌ها</th>
+                    <th colspan="2" class="edu-column">مشاغل آموزشی-پژوهشی</th>
+                    <th colspan="2" class="admin-column">مشاغل ستادی</th>
+                    <th colspan="2" class="command-column">مشاغل فرماندهی</th>
                 </tr>
                 <tr>
-                    <th>میزان اثر</th>
-                    <th>درجه اهمیت</th>
-                    <th>میزان اثر</th>
-                    <th>درجه اهمیت</th>
-                    <th>میزان اثر</th>
-                    <th>درجه اهمیت</th>
+                    <th class="edu-column">میزان اثر</th>
+                    <th class="edu-column">درجه اهمیت</th>
+                    <th class="admin-column">میزان اثر</th>
+                    <th class="admin-column">درجه اهمیت</th>
+                    <th class="command-column">میزان اثر</th>
+                    <th class="command-column">درجه اهمیت</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -130,13 +127,13 @@
             competencies.forEach((competency, index) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${competency}</td>
-                    <td><select name="effect_edu_${index}" class="effect" required></select></td>
-                    <td><select name="importance_edu_${index}" class="importance" required></select></td>
-                    <td><select name="effect_admin_${index}" class="effect" required></select></td>
-                    <td><select name="importance_admin_${index}" class="importance" required></select></td>
-                    <td><select name="effect_command_${index}" class="effect" required></select></td>
-                    <td><select name="importance_command_${index}" class="importance" required></select></td>
+                    <td class="competency-column">${competency}</td>
+                    <td class="edu-column"><select name="effect_edu_${index}" class="effect" required></select></td>
+                    <td class="edu-column"><select name="importance_edu_${index}" class="importance" required></select></td>
+                    <td class="admin-column"><select name="effect_admin_${index}" class="effect" required></select></td>
+                    <td class="admin-column"><select name="importance_admin_${index}" class="importance" required></select></td>
+                    <td class="command-column"><select name="effect_command_${index}" class="effect" required></select></td>
+                    <td class="command-column"><select name="importance_command_${index}" class="importance" required></select></td>
                 `;
                 tableBody.appendChild(row);
             });
