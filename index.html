@@ -10,18 +10,21 @@
         th { background-color: #f2f2f2; }
         select { width: 100%; padding: 5px; }
         select:focus { background-color: #e0f7fa; }
-        /* رنگ‌های ملایم برای ستون‌های هر شغل */
-        /* مشاغل آموزشی-پژوهشی: سبز ملایم */
+        /* رنگ برای ستون شایستگی‌ها (اولین ستون) */
+        th:nth-child(1), td:nth-child(1) {
+            background-color: #f5f5f5; /* خاکستری خیلی روشن */
+        }
+        /* مشاغل آموزشی-پژوهشی: سبز پررنگ‌تر */
         th:nth-child(2), th:nth-child(3), td:nth-child(2), td:nth-child(3) {
-            background-color: #e6f4ea; /* سبز ملایم */
+            background-color: #c8e6c9;
         }
-        /* مشاغل ستادی: آبی ملایم */
+        /* مشاغل ستادی: آبی پررنگ‌تر */
         th:nth-child(4), th:nth-child(5), td:nth-child(4), td:nth-child(5) {
-            background-color: #e6f0fa; /* آبی ملایم */
+            background-color: #bbdefb;
         }
-        /* مشاغل فرماندهی: زرد ملایم */
+        /* مشاغل فرماندهی: زرد پررنگ‌تر */
         th:nth-child(6), th:nth-child(7), td:nth-child(6), td:nth-child(7) {
-            background-color: #fff7e6; /* زرد ملایم */
+            background-color: #ffecb3;
         }
         /* استایل برای فیلد نام */
         .name-field {
@@ -39,7 +42,7 @@
 </head>
 <body>
     <h2>ارزیابی شایستگی‌های شغلی</h2>
-    <p>لطفاً برای هر شایستگی، میزان اثر و درجه اهمیت را مشخص کنید. برای انتخاب گزینه‌ها از کلیدهای 1 تا 5 و برای حرکت بین سلول‌ها از کلیدهای جهت‌نما استفاده کنید.</p>
+    <p>لطفا برای تعیین میزان اثر از یکی از پنج میزان (خیلی کم-کم-متوسط-زیاد-خیلی زیاد) استفاده کنید و برای درجه‌ی اهمیت از بازه‌ی (0 تا 1) عددی را تخصیص دهید.</p>
     <form id="competencyForm">
         <!-- فیلد نام -->
         <div class="name-field">
@@ -202,8 +205,10 @@
                 // اضافه کردن زمان ارسال
                 data.timestamp = new Date().toISOString();
 
+                // برای دیباگ: داده‌ها رو قبل از ارسال تو کنسول نمایش بده
+                console.log("Data to be sent to Firestore:", data);
+
                 try {
-                    console.log("Attempting to save data to Firestore:", data);
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("Document written with ID:", docRef.id);
                     alert("پاسخ‌ها با موفقیت ارسال شد!");
