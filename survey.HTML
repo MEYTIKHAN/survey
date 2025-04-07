@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ارزیابی شایستگی‌های شغلی</title>
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        select { width: 100%; padding: 5px; }
+        select:focus { background-color: #e0f7fa; }
+    </style>
+</head>
+<body>
+    <h2>ارزیابی شایستگی‌های شغلی</h2>
+    <p>لطفاً برای هر شایستگی، میزان اثر و درجه اهمیت را مشخص کنید. برای انتخاب گزینه‌ها از کلیدهای 1 تا 5 و برای حرکت بین سلول‌ها از کلیدهای جهت‌نما استفاده کنید.</p>
+    <form id="competencyForm">
+        <table id="competencyTable">
+            <thead>
+                <tr>
+                    <th rowspan="2">شایستگی‌ها</th>
+                    <th colspan="2">مشاغل آموزشی-پژوهشی</th>
+                    <th colspan="2">مشاغل ستادی</th>
+                    <th colspan="2">مشاغل فرماندهی</th>
+                </tr>
+                <tr>
+                    <th>میزان اثر</th>
+                    <th>درجه اهمیت</th>
+                    <th>میزان اثر</th>
+                    <th>درجه اهمیت</th>
+                    <th>میزان اثر</th>
+                    <th>درجه اهمیت</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        <br>
+        <button type="submit">ارسال</button>
+    </form>
+
+    <script>
+        const competencies = [
+            "قدرت تحلیل و درک محیط", "گوش دادن فعال", "مهارت نوشتاری و مکاتبه", "هوش کلامی",
+            "هوش تحلیلی و محاسباتی", "دانش حرفه‌ای و شغلی", "تفکر انتقادی", "یادگیری فعال",
+            "راهبردهای یادگیری", "قدرت نظارت و کنترل", "آگاهی اجتماعی", "هماهنگی بین بخشی",
+            "رهبری تحول‌گرا", "مهارت مذاکره و فن بیان", "مهارت حل مسائل پیچیده", "تحلیل عملیات",
+            "مهارت‌های رایانه‌ای و برنامه‌نویسی", "پایش فرایندهای اجرایی", "مهارت مسأله‌یابی",
+            "مهارت تصمیم‌گیری و قضاوت", "تفکر و تحلیل سیستمی و ارزیابی سیستم‌ها", "مدیریت زمان",
+            "مدیریت منابع مالی", "مدیریت تجهیزات و منابع مادی", "مدیریت منابع انسانی"
+        ];
+
+        const effectOptions = ["خیلی کم", "کم", "متوسط", "زیاد", "خیلی زیاد"];
+        const importanceOptions = [0, 0.25, 0.5, 0.75, 1];
+
+        const tableBody = document.getElementById("tableBody");
+        competencies.forEach((competency, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${competency}</td>
+                <td><select name="effect_edu_${index}" class="effect" required></select></td>
+                <td><select name="importance_edu_${index}" class="importance" required></select></td>
+                <td><select name="effect_admin_${index}" class="effect" required></select></td>
+                <td><select name="importance_admin_${index}" class="importance" required></select></td>
+                <td><select name="effect_command_${index}" class="effect" required></select></td>
+                <td><select name="importance_command_${index}" class="importance" required></select></td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        document.querySelectorAll(".effect").forEach(select => {
+            effectOptions.forEach(option => {
+                const opt = document.createElement("option");
+                opt.value = option;
+                opt.text = option;
+                select.appendChild(opt);
+            });
+        });
+
+        document.querySelectorAll(".importance").forEach(select => {
+            importanceOptions.forEach(option => {
+                const opt = document.createElement("option");
+                opt.value = option;
+                opt.text = option;
+                select.appendChild(opt);
+            });
+        });
+
+        document.addEventListener("keydown", (e) => {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName === "SELECT") {
+                const row = activeElement.parentElement.parentElement.rowIndex - 2;
+                const col = activeElement.parentElement.cellIndex;
+                const allSelects = document.querySelectorAll("select");
+
+                if (e.key >= "1" && e.key <= "5") {
+                    e.preventDefault();
+                    const index = parseInt(e.key) - 1;
+                    if (activeElement.classList.contains("effect")) {
+                        activeElement.value = effectOptions[index];
+                    } else if (activeElement.classList.contains("importance")) {
+                        activeElement.value = importanceOptions[index];
+                    }
+                }
+
+                if (e.key === "ArrowRight" || e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+                    e.preventDefault();
+                    let newRow = row;
+                    let newCol = col;
+
+                    if (e.key === "ArrowRight") newCol = Math.min(col + 1, 6);
+                    if (e.key === "ArrowLeft") newCol = Math.max(col - 1, 1);
+                    if (e.key === "ArrowDown") newRow = Math.min(row + 1, 24);
+                    if (e.key === "ArrowUp") newRow = Math.max(row - 1, 0);
+
+                    const newIndex = newRow * 6 + (newCol - 1);
+                    if (newIndex >= 0 && newIndex < allSelects.length) {
+                        allSelects[newIndex].focus();
+                    }
+                }
+            }
+        });
+
+        document.getElementById("competencyForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert("پاسخ‌ها با موفقیت ارسال شد!");
+                e.target.reset();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("خطایی در ارسال رخ داد. لطفاً دوباره امتحان کنید.");
+            });
+        });
+    </script>
+</body>
+</html>
