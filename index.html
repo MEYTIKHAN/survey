@@ -31,13 +31,14 @@
         }
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 500px;
+            text-align: right;
             border-radius: 10px;
+            line-height: 1.6;
         }
         .close-btn {
             color: #aaa;
@@ -63,13 +64,44 @@
     </style>
 </head>
 <body>
-    <!-- Modal خوش‌آمدگویی -->
+    <!-- Modal خوش‌آمدگویی اول -->
     <div id="welcomeModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('welcomeModal').style.display='none'">&times;</span>
-            <h3>سلام!</h3>
-            <p>از شما برای شرکت در این پرسشنامه و کمک به ارزیابی شایستگی‌های شغلی صمیمانه تشکر می‌کنیم.</p>
-            <button onclick="document.getElementById('welcomeModal').style.display='none'">باشه</button>
+            <span class="close-btn" onclick="showSecondModal()">×</span>
+            <h3>با سلام و احترام 🌷</h3>
+            <p>از شما صمیمانه سپاسگزاریم که وقت ارزشمندتان را برای شرکت در این پرسشنامه اختصاص داده‌اید. مشارکت شما نقش بسیار مهمی در پیشبرد اهداف این پژوهش دارد و بدون تردید، نظرات و تجربیات‌تان ما را در دستیابی به نتایج دقیق‌تر و کاربردی‌تر یاری خواهد کرد.</p>
+            <p>پیشاپیش از همکاری شما کمال تشکر را داریم.</p>
+            <button onclick="showSecondModal()">ادامه</button>
+        </div>
+    </div>
+
+    <!-- Modal دوم -->
+    <div id="secondModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('secondModal').style.display='none'">×</span>
+            <p>در این پژوهش، هدف ما شناسایی شایستگی‌های کلیدی مؤثر بر موفقیت در سه گروه شغلی فرماندهی، آموزشی-پژوهشی و ستادی است.</p>
+            <p>در مرحله‌ نخست، با مرور و بررسی اولیه‌ ادبیات تحقیق، فهرستی از ۲۵ شایستگی اصلی استخراج شده است.</p>
+            <p>اکنون، از شما کارشناس گرامی و دارای تجربه‌ی ارزشمند در این حوزه‌ها درخواست داریم تا با توجه به سوابق حرفه‌ای و تجربیات میدانی خود در این سه حوزه شغلی، به ارزیابی اهمیت و تأثیر هر یک از این شایستگی‌ها بپردازید.</p>
+            <p><strong>خواهشمندیم:</strong></p>
+            <ul>
+                <li>میزان اثرگذاری هر شایستگی را در موفقیت شغلی در هر یک از سه گروه شغلی مشخص نمایید.</li>
+                <li>همچنین درجه‌ی اهمیت کلی هر شایستگی را نیز تعیین فرمایید.</li>
+            </ul>
+            <p>مشارکت صادقانه و دقیق شما، نقشی کلیدی در بهبود و دقت نتایج این پژوهش خواهد داشت.</p>
+            <button onclick="document.getElementById('secondModal').style.display='none'">شروع</button>
+        </div>
+    </div>
+
+    <!-- Modal موفقیت -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('successModal').style.display='none'">×</span>
+            <h3>✅ پرسشنامه با موفقیت ثبت شد.</h3>
+            <p>از همکاری ارزشمند شما صمیمانه سپاسگزاریم.</p>
+            <p>نظرات و تجربیات شما نقش بسزایی در ارتقای کیفیت این پژوهش علمی دارد.</p>
+            <p>از اینکه وقت گذاشتید و ما را در این مسیر یاری کردید، بی‌نهایت ممنونیم.</p>
+            <p>با آرزوی سلامتی و توفیق روزافزون 🌿</p>
+            <button onclick="document.getElementById('successModal').style.display='none'">باشه</button>
         </div>
     </div>
 
@@ -211,10 +243,16 @@
                 });
             });
 
-            // نمایش modal هنگام بارگذاری صفحه
+            // نمایش modal اول هنگام بارگذاری صفحه
             window.onload = function() {
                 document.getElementById("welcomeModal").style.display = "block";
             };
+
+            // تابع برای نمایش modal دوم بعد از بستن اولی
+            function showSecondModal() {
+                document.getElementById("welcomeModal").style.display = "none";
+                document.getElementById("secondModal").style.display = "block";
+            }
 
             document.addEventListener("keydown", (e) => {
                 const activeElement = document.activeElement;
@@ -265,7 +303,8 @@
                 try {
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("Document written with ID:", docRef.id);
-                    alert("پاسخ‌ها با موفقیت ارسال شد!");
+                    // نمایش modal موفقیت
+                    document.getElementById("successModal").style.display = "block";
                     e.target.reset();
                 } catch (error) {
                     console.error("Error adding document to Firestore:", error);
