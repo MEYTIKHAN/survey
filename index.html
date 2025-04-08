@@ -158,6 +158,11 @@
                 });
             });
 
+            // پیام خوش‌آمدگویی هنگام بارگذاری صفحه
+            window.onload = function() {
+                alert("سلام!\nاز شما برای شرکت در این پرسشنامه و کمک به ارزیابی شایستگی‌های شغلی صمیمانه تشکر می‌کنیم.");
+            };
+
             document.addEventListener("keydown", (e) => {
                 const activeElement = document.activeElement;
                 if (activeElement.tagName === "SELECT") {
