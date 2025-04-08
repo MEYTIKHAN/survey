@@ -17,9 +17,62 @@
         .info-field { margin-bottom: 15px; }
         .info-field label { font-weight: bold; margin-left: 10px; }
         .info-field select { padding: 5px; width: 200px; }
+
+        /* استایل برای modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .close-btn {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            color: #000;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+    <!-- Modal خوش‌آمدگویی -->
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('welcomeModal').style.display='none'">&times;</span>
+            <h3>سلام!</h3>
+            <p>از شما برای شرکت در این پرسشنامه و کمک به ارزیابی شایستگی‌های شغلی صمیمانه تشکر می‌کنیم.</p>
+            <button onclick="document.getElementById('welcomeModal').style.display='none'">باشه</button>
+        </div>
+    </div>
+
     <h2>ارزیابی شایستگی‌های شغلی</h2>
     <p>لطفا برای تعیین میزان اثر هریک از شایستگی‌های زیر بر گروه‌های شغلی از یکی از پنج میزان (خیلی کم-کم-متوسط-زیاد-خیلی زیاد) استفاده کنید و برای درجه‌ی اهمیت از بازه‌ی (0 تا 1) عددی را تخصیص دهید.</p>
     <form id="competencyForm">
@@ -158,9 +211,9 @@
                 });
             });
 
-            // پیام خوش‌آمدگویی هنگام بارگذاری صفحه
+            // نمایش modal هنگام بارگذاری صفحه
             window.onload = function() {
-                alert("سلام!\nاز شما برای شرکت در این پرسشنامه و کمک به ارزیابی شایستگی‌های شغلی صمیمانه تشکر می‌کنیم.");
+                document.getElementById("welcomeModal").style.display = "block";
             };
 
             document.addEventListener("keydown", (e) => {
