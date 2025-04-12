@@ -212,19 +212,6 @@
             const db = getFirestore(app);
             console.log("Firebase با موفقیت مقداردهی شد:", app);
 
-            // تست ساخت کالکشن با یک داکیومنت اولیه
-            async function initializeCollection() {
-                try {
-                    await addDoc(collection(db, "responses_new"), {
-                        test: "Initial document to create collection",
-                        timestamp: new Date().toISOString()
-                    });
-                    console.log("کالکشن responses_new با موفقیت ساخته شد");
-                } catch (error) {
-                    console.error("خطا در ساخت کالکشن:", error);
-                }
-            }
-
             const competencies = [
                 "قدرت تحلیل و درک محیط",
                 "گوش دادن فعال",
@@ -290,10 +277,8 @@
             });
 
             // نمایش modal هشدار VPN هنگام بارگذاری صفحه
-            window.onload = async function() {
+            window.onload = function() {
                 document.getElementById("vpnWarningModal").style.display = "block";
-                // ساخت کالکشن در زمان لود
-                await initializeCollection();
             };
 
             document.addEventListener("keydown", (e) => {
@@ -342,8 +327,8 @@
                 data.timestamp = new Date().toISOString();
                 console.log("داده‌های فرم:", data);
                 try {
-                    console.log("تلاش برای نوشتن تو Firestore...");
-                    const docRef = await addDoc(collection(db, "responses_new"), data);
+                    console.log("تلاش برای نوشتن تو Firestore (کالکشن responses)...");
+                    const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
                     document.getElementById("successModal").style.display = "block";
                     e.target.reset();
@@ -354,6 +339,7 @@
             });
         } catch (error) {
             console.error("خطا تو مقداردهی Firebase:", error);
+            alert("خطا تو اتصال به Firebase: " + error.message);
         }
     </script>
 </body>
