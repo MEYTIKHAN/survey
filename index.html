@@ -18,7 +18,6 @@
         .info-field label { font-weight: bold; margin-left: 10px; }
         .info-field select { padding: 5px; width: 200px; }
 
-        /* استایل برای modal */
         .modal {
             display: none;
             position: fixed;
@@ -62,7 +61,6 @@
             background-color: #45a049;
         }
 
-        /* استایل برای modal هشدار VPN */
         #vpnWarningModal {
             z-index: 2;
         }
@@ -72,7 +70,6 @@
     </style>
 </head>
 <body>
-    <!-- Modal هشدار VPN -->
     <div id="vpnWarningModal" class="modal">
         <div class="modal-content">
             <h3>هشدار مهم</h3>
@@ -83,7 +80,6 @@
         </div>
     </div>
 
-    <!-- Modal خوش‌آمدگویی -->
     <div id="welcomeModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="showSecondModal()">×</span>
@@ -94,7 +90,6 @@
         </div>
     </div>
 
-    <!-- Modal دوم -->
     <div id="secondModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('secondModal').style.display='none'">×</span>
@@ -111,7 +106,6 @@
         </div>
     </div>
 
-    <!-- Modal موفقیت -->
     <div id="successModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('successModal').style.display='none'">×</span>
@@ -129,7 +123,6 @@
     <p>لطفاً پیش از شروع، اطلاعات مربوط به «سطح تحصیلات»، «سابقه کاری» و «گروه شغلی» خود را تکمیل فرمایید.</p>
 
     <form id="competencyForm">
-        <!-- اطلاعات اولیه -->
         <div class="info-field">
             <label for="educationLevel">سطح تحصیلات:</label>
             <select id="educationLevel" name="educationLevel" required>
@@ -195,13 +188,11 @@
             appId: "1:607572891153:web:f471ac1c4c8c31b12243b0"
         };
 
-        // تابع برای بستن modal هشدار VPN
         window.closeVpnWarningModal = function() {
             document.getElementById("vpnWarningModal").style.display = "none";
             document.getElementById("welcomeModal").style.display = "block";
         };
 
-        // تابع برای نمایش modal دوم
         window.showSecondModal = function() {
             document.getElementById("welcomeModal").style.display = "none";
             document.getElementById("secondModal").style.display = "block";
@@ -276,7 +267,6 @@
                 });
             });
 
-            // نمایش modal هشدار VPN هنگام بارگذاری صفحه
             window.onload = function() {
                 document.getElementById("vpnWarningModal").style.display = "block";
             };
@@ -327,19 +317,18 @@
                 data.timestamp = new Date().toISOString();
                 console.log("داده‌های فرم:", data);
                 try {
-                    console.log("تلاش برای نوشتن تو Firestore (کالکشن responses)...");
+                    console.log("تلاش برای نوشتن تو Firestore...");
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
                     document.getElementById("successModal").style.display = "block";
                     e.target.reset();
                 } catch (error) {
                     console.error("خطا تو نوشتن به Firestore:", error.code, error.message);
-                    alert("خطایی تو ارسال پیش اومد: " + error.message);
+                    alert("خطایی در ارسال رخ داد: " + error.message);
                 }
             });
         } catch (error) {
             console.error("خطا تو مقداردهی Firebase:", error);
-            alert("خطا تو اتصال به Firebase: " + error.message);
         }
     </script>
 </body>
