@@ -324,11 +324,12 @@
                     e.target.reset();
                 } catch (error) {
                     console.error("خطا تو نوشتن به Firestore:", error.code, error.message);
-                    alert("خطایی در ارسال رخ داد: " + error.message);
+                    alert("خطا در ارسال: عدم دسترسی به پایگاه داده. لطفاً تنظیمات دسترسی را بررسی کنید.");
                 }
             });
         } catch (error) {
             console.error("خطا تو مقداردهی Firebase:", error);
+            alert("خطا در اتصال به پایگاه داده: " + error.message);
         }
     </script>
 </body>
