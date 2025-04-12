@@ -64,7 +64,7 @@
 
         /* استایل برای modal هشدار VPN */
         #vpnWarningModal {
-            z-index: 2; /* بالاتر از سایر modalها */
+            z-index: 2;
         }
         #vpnWarningModal .modal-content {
             max-width: 400px;
@@ -89,7 +89,7 @@
             <span class="close-btn" onclick="showSecondModal()">×</span>
             <h3>عرض سلام و ارادت 🌷</h3>
             <p>از شما که با اختصاص وقت گران‌بهای خود به این پرسشنامه، ما را در این پژوهش همراهی می‌کنید، صمیمانه سپاسگزاریم. دیدگاه‌ها و تجربیات شما، چراغ راه ما در دستیابی به نتایجی دقیق‌تر و کاربردی‌تر خواهد بود.</p>
-            <p>پیشاپیش از همکاری صمیمانه‌‌ی شما قدردانی می‌کنیم.</p>
+            <p>پیشاپیش از همکاری صمیمانه‌تان قدردانی می‌کنیم.</p>
             <button onclick="showSecondModal()">ادامه</button>
         </div>
     </div>
@@ -125,7 +125,7 @@
     </div>
 
     <h2>ارزیابی شایستگی‌های شغلی</h2>
-    <p>لطفاً شایستگی‌های زیر را بررسی کرده و برای هر یک از آنها، میزان اثرگذاری بر گروه‌های شغلی (فرماندهی، آموزشی-پژوهشی، ستادی) را با انتخاب یکی از گزینه‌های «خیلی کم» تا «خیلی زیاد» و درجه‌ی اهمیت کلی آن را در بازه‌ی ۰ تا ۱ مشخص کنید.</p>
+    <p>لطفاً شایستگی‌های زیر را بررسی کرده و برای هر یک، میزان اثرگذاری بر گروه‌های شغلی (فرماندهی، آموزشی-پژوهشی، ستادی) را با انتخاب یکی از گزینه‌های «خیلی کم» تا «خیلی زیاد» و درجه‌ی اهمیت کلی آن را در بازه‌ی ۰ تا ۱ مشخص کنید.</p>
     <p>لطفاً پیش از شروع، اطلاعات مربوط به «سطح تحصیلات»، «سابقه کاری» و «گروه شغلی» خود را تکمیل فرمایید.</p>
 
     <form id="competencyForm">
@@ -210,7 +210,20 @@
         try {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
-            console.log("Firebase initialized successfully:", app);
+            console.log("Firebase با موفقیت مقداردهی شد:", app);
+
+            // تست ساخت کالکشن با یک داکیومنت اولیه
+            async function initializeCollection() {
+                try {
+                    await addDoc(collection(db, "responses_new"), {
+                        test: "Initial document to create collection",
+                        timestamp: new Date().toISOString()
+                    });
+                    console.log("کالکشن responses_new با موفقیت ساخته شد");
+                } catch (error) {
+                    console.error("خطا در ساخت کالکشن:", error);
+                }
+            }
 
             const competencies = [
                 "قدرت تحلیل و درک محیط",
@@ -277,8 +290,10 @@
             });
 
             // نمایش modal هشدار VPN هنگام بارگذاری صفحه
-            window.onload = function() {
+            window.onload = async function() {
                 document.getElementById("vpnWarningModal").style.display = "block";
+                // ساخت کالکشن در زمان لود
+                await initializeCollection();
             };
 
             document.addEventListener("keydown", (e) => {
@@ -318,27 +333,27 @@
 
             document.getElementById("competencyForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
+                console.log("شروع ارسال فرم...");
                 const formData = new FormData(e.target);
                 const data = {};
                 formData.forEach((value, key) => {
                     data[key] = value;
                 });
                 data.timestamp = new Date().toISOString();
-
-                console.log("Data to be sent to Firestore:", data);
-
+                console.log("داده‌های فرم:", data);
                 try {
-                    const docRef = await addDoc(collection(db, "responses"), data);
-                    console.log("Document written with ID:", docRef.id);
+                    console.log("تلاش برای نوشتن تو Firestore...");
+                    const docRef = await addDoc(collection(db, "responses_new"), data);
+                    console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
                     document.getElementById("successModal").style.display = "block";
                     e.target.reset();
                 } catch (error) {
-                    console.error("Error adding document to Firestore:", error);
-                    alert("خطایی در ارسال رخ داد: " + error.message);
+                    console.error("خطا تو نوشتن به Firestore:", error.code, error.message);
+                    alert("خطایی تو ارسال پیش اومد: " + error.message);
                 }
             });
         } catch (error) {
-            console.error("Error initializing Firebase:", error);
+            console.error("خطا تو مقداردهی Firebase:", error);
         }
     </script>
 </body>
