@@ -2,31 +2,72 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ارزیابی شایستگی‌های شغلی</title>
     <style>
-        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        select { width: 100%; padding: 5px; }
-        select:focus { background-color: #e0f7fa; }
-        .competency-column { background-color: #ffffff; }
-        .edu-column { background-color: #e6f4ea; }
-        .admin-column { background-color: #e6f0fa; }
-        .command-column { background-color: #fff7e6; }
-        .info-field { margin-bottom: 15px; }
-        .info-field label { font-weight: bold; margin-left: 10px; }
-        .info-field select { padding: 5px; width: 200px; }
-
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 20px;
+        }
+        h2, p {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        select {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        select:focus {
+            background-color: #e0f7fa;
+        }
+        .competency-column {
+            background-color: #ffffff;
+        }
+        .edu-column {
+            background-color: #e6f4ea;
+        }
+        .admin-column {
+            background-color: #e6f0fa;
+        }
+        .command-column {
+            background-color: #fff7e6;
+        }
+        .info-field {
+            margin-bottom: 15px;
+        }
+        .info-field label {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .info-field select {
+            padding: 5px;
+            width: 200px;
+        }
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
+            overflow: auto;
         }
         .modal-content {
             background-color: #fefefe;
@@ -60,9 +101,8 @@
         button:hover {
             background-color: #45a049;
         }
-
         #vpnWarningModal {
-            z-index: 2;
+            z-index: 2000;
         }
         #vpnWarningModal .modal-content {
             max-width: 400px;
@@ -168,8 +208,7 @@
                     <th class="command-column">درجه اهمیت</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
         <br>
         <button type="submit">ارسال</button>
@@ -296,9 +335,10 @@
                 document.getElementById("secondModal").style.display = "block";
             };
 
-            window.onload = function() {
+            // نمایش مودال VPN موقع لود صفحه
+            document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("vpnWarningModal").style.display = "block";
-            };
+            });
 
             // مدیریت کلیدهای کیبورد
             document.addEventListener("keydown", (e) => {
@@ -325,7 +365,7 @@
 
                         if (e.key === "ArrowRight") newCol = Math.min(col + 1, 6);
                         if (e.key === "ArrowLeft") newCol = Math.max(col - 1, 1);
-                        if (e.key === "ArrowDown") newRow = Math.min(row + 1, 24);
+                        if (e.key === "ArrowDown") newRow = Math.min(row + 1, competencies.length - 1);
                         if (e.key === "ArrowUp") newRow = Math.max(row - 1, 0);
 
                         const newIndex = newRow * 6 + (newCol - 1);
@@ -360,18 +400,18 @@
                 competencies.forEach((competency, index) => {
                     if (jobGroup === "آموزشی-پژوهشی") {
                         data.competencies[competency] = {
-                            effect_edu: formData.get(`effect_edu_${index}`),
-                            importance_edu: formData.get(`importance_edu_${index}`)
+                            effect_edu: formData.get(`effect_edu_${index}`) || "متوسط",
+                            importance_edu: formData.get(`importance_edu_${index}`) || 0.5
                         };
                     } else if (jobGroup === "ستادی") {
                         data.competencies[competency] = {
-                            effect_admin: formData.get(`effect_admin_${index}`),
-                            importance_admin: formData.get(`importance_admin_${index}`)
+                            effect_admin: formData.get(`effect_admin_${index}`) || "متوسط",
+                            importance_admin: formData.get(`importance_admin_${index}`) || 0.5
                         };
                     } else if (jobGroup === "فرماندهی") {
                         data.competencies[competency] = {
-                            effect_command: formData.get(`effect_command_${index}`),
-                            importance_command: formData.get(`importance_command_${index}`)
+                            effect_command: formData.get(`effect_command_${index}`) || "متوسط",
+                            importance_command: formData.get(`importance_command_${index}`) || 0.5
                         };
                     }
                 });
@@ -382,7 +422,7 @@
                     console.log("تلاش برای نوشتن در Firestore...");
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
-                    document.getElementById("successModal").style mm display = "block";
+                    document.getElementById("successModal").style.display = "block";
                     e.target.reset();
                     // بازنشانی نمایش ستون‌ها
                     document.querySelectorAll(".edu-column, .admin-column, .command-column").forEach(col => col.style.display = "none");
