@@ -98,7 +98,7 @@
             <p>اکنون، از شما خبره‌ی گرامی درخواست داریم تا با توجه به سوابق حرفه‌ای و تجربیات میدانی خود در این سه حوزه شغلی، به ارزیابی اهمیت و تأثیر هر یک از این شایستگی‌ها بپردازید.</p>
             <p><strong>خواهشمندیم:</strong></p>
             <ul>
-                <li>برای هر شایستگی، میزان اثرگذاری آن را بر موفقیت در هر یک از سه گروه شغلی (فرماندهی، آموزشی-پژوهشی، ستادی) با گزینه‌های «خیلی کم» تا «خیلی زیاد» مشخص کنید.</li>
+                <li>برای هر شایستگی، میزان اثرگذاری آن را بر موفقیت در گروه شغلی انتخاب‌شده با گزینه‌های «خیلی کم» تا «خیلی زیاد» مشخص کنید.</li>
                 <li>همچنین، درجه‌ی اهمیت کلی هر شایستگی را در بازه‌ی ۰ تا ۱ تعیین فرمایید.</li>
             </ul>
             <p>پاسخ‌های دقیق و صادقانه‌ی شما، نقشی بنیادین در غنای این پژوهش خواهد داشت.</p>
@@ -119,7 +119,7 @@
     </div>
 
     <h2>ارزیابی شایستگی‌های شغلی</h2>
-    <p>لطفاً شایستگی‌های زیر را بررسی کرده و برای هر یک، میزان اثرگذاری بر گروه‌های شغلی (فرماندهی، آموزشی-پژوهشی، ستادی) را با انتخاب یکی از گزینه‌های «خیلی کم» تا «خیلی زیاد» و درجه‌ی اهمیت کلی آن را در بازه‌ی ۰ تا ۱ مشخص کنید.</p>
+    <p>لطفاً شایستگی‌های زیر را بررسی کرده و برای هر یک، میزان اثرگذاری بر گروه شغلی انتخاب‌شده را با انتخاب یکی از گزینه‌های «خیلی کم» تا «خیلی زیاد» و درجه‌ی اهمیت کلی آن را در بازه‌ی ۰ تا ۱ مشخص کنید.</p>
     <p>لطفاً پیش از شروع، اطلاعات مربوط به «سطح تحصیلات»، «سابقه کاری» و «گروه شغلی» خود را تکمیل فرمایید.</p>
 
     <form id="competencyForm">
@@ -164,7 +164,7 @@
                     <th class="edu-column">درجه اهمیت</th>
                     <th class="admin-column">میزان اثر</th>
                     <th class="admin-column">درجه اهمیت</th>
-                    <th class="command-column">میزان اثر  اثر</th>
+                    <th class="command-column">میزان اثر</th>
                     <th class="command-column">درجه اهمیت</th>
                 </tr>
             </thead>
@@ -176,33 +176,27 @@
     </form>
 
     <script type="module">
+        // وارد کردن ماژول‌های فایربیس
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+        // تنظیمات فایربیس
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCLZnOCF9eK7TkKu7S3rwB0abbfSDwV5dU",
+            authDomain: "survey-2c8f2.firebaseapp.com",
+            projectId: "survey-2c8f2",
+            storageBucket: "survey-2c8f2.firebasestorage.app",
+            messagingSenderId: "857874791658",
+            appId: "1:857874791658:web:eb6bdfcf7a7edd22eb2b93"
         };
 
-        window.closeVpnWarningModal = function() {
-            document.getElementById("vpnWarningModal").style.display = "none";
-            document.getElementById("welcomeModal").style.display = "block";
-        };
-
-        window.showSecondModal = function() {
-            document.getElementById("welcomeModal").style.display = "none";
-            document.getElementById("secondModal").style.display = "block";
-        };
-
+        // راه‌اندازی فایربیس
         try {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             console.log("Firebase با موفقیت مقداردهی شد:", app);
 
+            // تعریف شایستگی‌ها
             const competencies = [
                 "قدرت تحلیل و درک محیط",
                 "گوش دادن فعال",
@@ -234,6 +228,7 @@
             const effectOptions = ["خیلی کم", "کم", "متوسط", "زیاد", "خیلی زیاد"];
             const importanceOptions = [0, 0.25, 0.5, 0.75, 1];
 
+            // پر کردن جدول
             const tableBody = document.getElementById("tableBody");
             competencies.forEach((competency, index) => {
                 const row = document.createElement("tr");
@@ -249,6 +244,7 @@
                 tableBody.appendChild(row);
             });
 
+            // پر کردن گزینه‌های سلکت‌ها
             document.querySelectorAll(".effect").forEach(select => {
                 effectOptions.forEach(option => {
                     const opt = document.createElement("option");
@@ -289,10 +285,22 @@
                 }
             });
 
+            // نمایش مودال خوش‌آمدگویی
+            window.closeVpnWarningModal = function() {
+                document.getElementById("vpnWarningModal").style.display = "none";
+                document.getElementById("welcomeModal").style.display = "block";
+            };
+
+            window.showSecondModal = function() {
+                document.getElementById("welcomeModal").style.display = "none";
+                document.getElementById("secondModal").style.display = "block";
+            };
+
             window.onload = function() {
                 document.getElementById("vpnWarningModal").style.display = "block";
             };
 
+            // مدیریت کلیدهای کیبورد
             document.addEventListener("keydown", (e) => {
                 const activeElement = document.activeElement;
                 if (activeElement.tagName === "SELECT") {
@@ -328,6 +336,7 @@
                 }
             });
 
+            // ارسال فرم به Firestore
             document.getElementById("competencyForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
                 console.log("شروع ارسال فرم...");
@@ -371,7 +380,7 @@
 
                 try {
                     console.log("تلاش برای نوشتن در Firestore...");
-                    const docRef = await addDoc(collection(db, "responses"), data);
+                    const docRef = await addDoc(collection(db, "جوابها"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
                     document.getElementById("successModal").style.display = "block";
                     e.target.reset();
@@ -379,7 +388,7 @@
                     document.querySelectorAll(".edu-column, .admin-column, .command-column").forEach(col => col.style.display = "none");
                 } catch (error) {
                     console.error("خطا در نوشتن به Firestore:", error.code, error.message);
-                    alert("خطا در ارسال: " + error.message + ". لطفاً اتصال شبکه و VPN خود را بررسی کنید.");
+                    alert("خطا در ارسال: " + error.message + ". لطفاً اتصال شبکه خود را بررسی کنید.");
                 }
             });
         } catch (error) {
