@@ -380,15 +380,15 @@
 
                 try {
                     console.log("تلاش برای نوشتن در Firestore...");
-                    const docRef = await addDoc(collection(db, "جوابها"), data);
+                    const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
-                    document.getElementById("successModal").style.display = "block";
+                    document.getElementById("successModal").style mm display = "block";
                     e.target.reset();
                     // بازنشانی نمایش ستون‌ها
                     document.querySelectorAll(".edu-column, .admin-column, .command-column").forEach(col => col.style.display = "none");
                 } catch (error) {
                     console.error("خطا در نوشتن به Firestore:", error.code, error.message);
-                    alert("خطا در ارسال: " + error.message + ". لطفاً اتصال شبکه خود را بررسی کنید.");
+                    alert("خطا در ارسال: " + error.message + ". لطفاً VPN خود را روشن کنید یا اتصال شبکه را بررسی کنید.");
                 }
             });
         } catch (error) {
