@@ -164,7 +164,7 @@
                     <th class="edu-column">درجه اهمیت</th>
                     <th class="admin-column">میزان اثر</th>
                     <th class="admin-column">درجه اهمیت</th>
-                    <th class="command-column">میزان اثر</th>
+                    <th class="command-column">میزان اثر  اثر</th>
                     <th class="command-column">درجه اهمیت</th>
                 </tr>
             </thead>
@@ -180,12 +180,12 @@
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAVVoGXMNl0nNi197lFC-lSAK1lvKMdhZo",
-            authDomain: "competencysurvey-77f4f.firebaseapp.com",
-            projectId: "competencysurvey-77f4f",
-            storageBucket: "competencysurvey-77f4f.firebasestorage.app",
-            messagingSenderId: "607572891153",
-            appId: "1:607572891153:web:f471ac1c4c8c31b12243b0"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         window.closeVpnWarningModal = function() {
@@ -239,12 +239,12 @@
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="competency-column">${competency}</td>
-                    <td class="edu-column"><select name="effect_edu_${index}" class="effect" required></select></td>
-                    <td class="edu-column"><select name="importance_edu_${index}" class="importance" required></select></td>
-                    <td class="admin-column"><select name="effect_admin_${index}" class="effect" required></select></td>
-                    <td class="admin-column"><select name="importance_admin_${index}" class="importance" required></select></td>
-                    <td class="command-column"><select name="effect_command_${index}" class="effect" required></select></td>
-                    <td class="command-column"><select name="importance_command_${index}" class="importance" required></select></td>
+                    <td class="edu-column"><select name="effect_edu_${index}" class="effect"></select></td>
+                    <td class="edu-column"><select name="importance_edu_${index}" class="importance"></select></td>
+                    <td class="admin-column"><select name="effect_admin_${index}" class="effect"></select></td>
+                    <td class="admin-column"><select name="importance_admin_${index}" class="importance"></select></td>
+                    <td class="command-column"><select name="effect_command_${index}" class="effect"></select></td>
+                    <td class="command-column"><select name="importance_command_${index}" class="importance"></select></td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -331,26 +331,59 @@
             document.getElementById("competencyForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
                 console.log("شروع ارسال فرم...");
+
+                const jobGroup = document.getElementById("jobGroup").value;
+                if (!jobGroup) {
+                    alert("لطفاً گروه شغلی را انتخاب کنید.");
+                    return;
+                }
+
                 const formData = new FormData(e.target);
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value;
+                const data = {
+                    educationLevel: formData.get("educationLevel"),
+                    serviceYears: formData.get("serviceYears"),
+                    jobGroup: jobGroup,
+                    timestamp: new Date().toISOString(),
+                    competencies: {}
+                };
+
+                // فیلتر کردن داده‌ها بر اساس گروه شغلی
+                competencies.forEach((competency, index) => {
+                    if (jobGroup === "آموزشی-پژوهشی") {
+                        data.competencies[competency] = {
+                            effect_edu: formData.get(`effect_edu_${index}`),
+                            importance_edu: formData.get(`importance_edu_${index}`)
+                        };
+                    } else if (jobGroup === "ستادی") {
+                        data.competencies[competency] = {
+                            effect_admin: formData.get(`effect_admin_${index}`),
+                            importance_admin: formData.get(`importance_admin_${index}`)
+                        };
+                    } else if (jobGroup === "فرماندهی") {
+                        data.competencies[competency] = {
+                            effect_command: formData.get(`effect_command_${index}`),
+                            importance_command: formData.get(`importance_command_${index}`)
+                        };
+                    }
                 });
-                data.timestamp = new Date().toISOString();
-                console.log("داده‌های فرم:", data);
+
+                console.log("داده‌های فرم برای ارسال:", data);
+
                 try {
-                    console.log("تلاش برای نوشتن تو Firestore...");
+                    console.log("تلاش برای نوشتن در Firestore...");
                     const docRef = await addDoc(collection(db, "responses"), data);
                     console.log("داکیومنت با موفقیت نوشته شد با ID:", docRef.id);
                     document.getElementById("successModal").style.display = "block";
                     e.target.reset();
+                    // بازنشانی نمایش ستون‌ها
+                    document.querySelectorAll(".edu-column, .admin-column, .command-column").forEach(col => col.style.display = "none");
                 } catch (error) {
-                    console.error("خطا تو نوشتن به Firestore:", error.code, error.message);
-                    alert("خطا در ارسال: عدم دسترسی به پایگاه داده. لطفاً تنظیمات دسترسی را بررسی کنید.");
+                    console.error("خطا در نوشتن به Firestore:", error.code, error.message);
+                    alert("خطا در ارسال: " + error.message + ". لطفاً اتصال شبکه و VPN خود را بررسی کنید.");
                 }
             });
         } catch (error) {
-            console.error("خطا تو مقداردهی Firebase:", error);
+            console.error("خطا در مقداردهی Firebase:", error);
             alert("خطا در اتصال به پایگاه داده: " + error.message);
         }
     </script>
