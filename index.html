@@ -267,6 +267,28 @@
                 });
             });
 
+            // مدیریت نمایش ستون‌ها بر اساس گروه شغلی
+            document.getElementById("jobGroup").addEventListener("change", function () {
+                const jobGroup = this.value;
+                const eduColumns = document.querySelectorAll(".edu-column");
+                const adminColumns = document.querySelectorAll(".admin-column");
+                const commandColumns = document.querySelectorAll(".command-column");
+
+                // مخفی کردن همه ستون‌ها
+                eduColumns.forEach(col => col.style.display = "none");
+                adminColumns.forEach(col => col.style.display = "none");
+                commandColumns.forEach(col => col.style.display = "none");
+
+                // نمایش ستون‌های مرتبط
+                if (jobGroup === "آموزشی-پژوهشی") {
+                    eduColumns.forEach(col => col.style.display = "");
+                } else if (jobGroup === "ستادی") {
+                    adminColumns.forEach(col => col.style.display = "");
+                } else if (jobGroup === "فرماندهی") {
+                    commandColumns.forEach(col => col.style.display = "");
+                }
+            });
+
             window.onload = function() {
                 document.getElementById("vpnWarningModal").style.display = "block";
             };
